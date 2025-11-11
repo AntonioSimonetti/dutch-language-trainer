@@ -8,6 +8,7 @@
 #include <pdcurses.h>
 #include <stdbool.h>
 #include <string.h>
+#include "../include/ui.h"
 
 int main() {
     // Initialize PDCurses, configure terminal and setup Colors for UI
@@ -35,9 +36,7 @@ int main() {
         attron(COLOR_PAIR(1));
 
         // Center title horizontally
-        int title_x = (COLS - strlen(title)) / 2;
-
-        mvprintw(2, title_x, title);
+        draw_centered_text(2, title);
 
         attroff(COLOR_PAIR(1));
 
@@ -81,19 +80,23 @@ int main() {
             }
         }
 
-        // Handle menu selection (Enter key)
+        // Handle menu selection (Enter key)    
         if(key == 10){
            switch(selected){
                 case 0:
                     // TODO: Start
+                    show_placeholder();
                     break;
                 case 1:
                     // TODO: Statistics
+                    show_placeholder();
                     break;
                 case 2:
                     // TODO: Settings
+                    show_placeholder();
                     break;
                 case 3:
+                    //Exit
                     running = false;
                     break;
                 default:
