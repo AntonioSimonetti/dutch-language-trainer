@@ -1,0 +1,25 @@
+# Eseguibili
+*.exe
+*.out
+
+# Object files
+*.o
+
+# Build artifacts
+build/
+dist/
+
+# Editor
+.vscode/*
+!.vscode/c_cpp_properties.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dati personali 
+data/*.dat
+
+# Test files
+# test.c
+test_static.exe
