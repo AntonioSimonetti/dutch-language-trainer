@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "../include/ui.h"
+#include "../include/menu.h"
 
 int main() {
     // Initialize PDCurses, configure terminal and setup Colors for UI
@@ -21,96 +22,31 @@ int main() {
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
-    // Menu Configuration
-    const char *menu_options[] = {"Start","Statistics","Settings","Exit"};
-    int selected = 0;
-    int num_options = sizeof(menu_options) / sizeof(menu_options[0]);
+    
+    // Main loop
 
-    const char *title = "=== DUTCH LANGUAGE TRAINER ===";
-    bool running = true;
+    while(1){
+        int choice = show_main_menu();
 
-    // Main menu loop
-    while(running){
-        // Clear screen and redraw menu at every iteration
-        clear();
-        attron(COLOR_PAIR(1));
-
-        // Center title horizontally
-        draw_centered_text(2, title);
-
-        attroff(COLOR_PAIR(1));
-
-        // Calculate centered position for menu options
-        int max_len = 0;
-        for(int i = 0; i < num_options;i++){
-            int len = strlen(menu_options[i]);
-            if(len > max_len) max_len = len;
+        // Handle menu choice
+        switch(choice){
+            case 0: // Start
+                show_placeholder();
+                break;
+            case 1: // Statistics
+                show_placeholder();
+                break;
+            case 2: // Settings
+                show_placeholder();
+                break;
+            case 3: // Exit
+                // Exit from switch-case
+                break;
         }
 
-        int menu_options_x = (COLS - max_len -2) /2;
-        
-        for(int i=0; i < num_options; i++){
-
-            if(i == selected){
-                attron(COLOR_PAIR(2));
-                mvprintw(6 + i, menu_options_x ,"► %s" , menu_options[i]);
-                attroff(COLOR_PAIR(2));
-            } else {
-                mvprintw(6 + i, menu_options_x ,"  %s" , menu_options[i]);
-            }
+        if(choice == 3){
+            break; // Exit main loop
         }
-
-        refresh();
-        int key = getch(); // Wait for user input
-
-        // Handle key presses
-        if(key == 60616){
-            selected++;
-
-            if(selected >= num_options){
-                selected = 0;
-            }
-        }
-
-        if(key == 60610){
-            selected--;
-
-            if(selected < 0){
-                selected = num_options -1;
-            }
-        }
-
-        // Handle menu selection (Enter key)    
-        if(key == 10){
-           switch(selected){
-                case 0:
-                    // TODO: Start
-                    show_placeholder();
-                    break;
-                case 1:
-                    // TODO: Statistics
-                    show_placeholder();
-                    break;
-                case 2:
-                    // TODO: Settings
-                    show_placeholder();
-                    break;
-                case 3:
-                    //Exit
-                    running = false;
-                    break;
-                default:
-                    // Shouldn't happen.
-                    clear();
-                    mvprintw(LINES/2, 5, "ERROR: selected = %d (impossible!)", selected);
-                    mvprintw(LINES/2 + 1, 5, "Press any key to exit...");
-                    refresh();
-                    getch();
-                    running = false;
-                    break;
-           }
-        }
-
     }
 
     endwin();
