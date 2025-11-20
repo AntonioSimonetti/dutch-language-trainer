@@ -19,7 +19,8 @@ Thumbs.db
 
 # Dati personali 
 data/*.dat
+progress.dat
 
 # Test files
-# test.c
-test_static.exe
+test*.c          
+test*.exe         
