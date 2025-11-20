@@ -10,6 +10,7 @@
 #include <string.h>
 #include "../include/ui.h"
 #include "../include/menu.h"
+#include "../include/audio.h"
 
 int main() {
     // Initialize PDCurses, configure terminal and setup Colors for UI
@@ -31,16 +32,20 @@ int main() {
         // Handle menu choice
         switch(choice){
             case 0: // Start
+                play_success_beep();
                 show_placeholder();
                 break;
             case 1: // Statistics
+                play_error_beep();
                 show_placeholder();
                 break;
             case 2: // Settings
+                play_success_beep();
                 show_placeholder();
                 break;
             case 3: // Exit
                 // Exit from switch-case
+                play_error_beep();
                 break;
         }
 
