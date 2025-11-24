@@ -24,4 +24,7 @@ void draw_centered_text(int y, const char *text);
  */
 void show_placeholder(void);
 
+void draw_box(int x, int y, int width, int height);
+
+
 #endif
