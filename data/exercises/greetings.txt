@@ -1,0 +1,12 @@
+# Greetings - Basic Dutch greetings
+# Format: Italian|Dutch
+Buongiorno|Goedemorgen
+Buonasera|Goedenavond
+Buonanotte|Goedenacht
+Ciao|Hallo
+Arrivederci|Tot ziens
+A presto|Tot snel
+Come stai?|Hoe gaat het?
+Bene, grazie|Goed, dank je
+Piacere di conoscerti|Leuk je te ontmoeten
+Benvenuto|Welkom

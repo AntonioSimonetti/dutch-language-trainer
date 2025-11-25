@@ -9,6 +9,7 @@
 #include "../include/ui.h"
 #include "../include/audio.h"
 #include "../include/progress.h"
+#include "../include/quiz.h"
 
 #define MAX_DISPLAY_STAGES 4
 #define TOTAL_MENU_ITEMS (MAX_DISPLAY_STAGES + 2)  // Stages + Phrases + Review
@@ -29,7 +30,8 @@ static MenuItem menu_items[TOTAL_MENU_ITEMS] = {
     {0, "Modalita Review", 1, 1}
 };
 
-// Forward declaration
+// Forward declarations
+static void run_stage_with_quiz(Progress *p, int stage_num, const char *quiz_file);
 static void run_stage_placeholder(Progress *p, int stage_num);
 
 void show_stage_selection(Progress *p) {
@@ -166,8 +168,15 @@ void show_stage_selection(Progress *p) {
                     // Normal stage
                     if (is_stage_unlocked(p, menu_items[selected].stage_number)) {
                         play_success_beep();
-                        run_stage_placeholder(p, menu_items[selected].stage_number);
-                        save_progress(p);  // Save after completing stage
+                        
+                        // Stage 1 has real quiz, others are placeholders
+                        if (menu_items[selected].stage_number == 1) {
+                            run_stage_with_quiz(p, 1, "data/exercises/greetings.txt");
+                        } else {
+                            run_stage_placeholder(p, menu_items[selected].stage_number);
+                        }
+                        
+                        save_progress(p);  // Save after stage
                     } else {
                         play_error_beep();
                     }
@@ -181,17 +190,60 @@ void show_stage_selection(Progress *p) {
     }
 }
 
+static void run_stage_with_quiz(Progress *p, int stage_num, const char *quiz_file) {
+    Quiz quiz;
+    
+    // Load quiz
+    if (!load_quiz(&quiz, quiz_file)) {
+        // Error loading quiz
+        clear();
+        draw_box(2, 5, COLS - 4, 6);
+        
+        attron(COLOR_PAIR(1) | A_BOLD);
+        mvprintw(8, (COLS - 30) / 2, "ERRORE: File esercizio non trovato!");
+        attroff(COLOR_PAIR(1) | A_BOLD);
+        
+        attron(COLOR_PAIR(3));
+        mvprintw(LINES - 2, (COLS - 30) / 2, "Premi un tasto per continuare...");
+        attroff(COLOR_PAIR(3));
+        
+        refresh();
+        getch();
+        return;
+    }
+    
+    // Run the quiz
+    int passed = run_quiz(&quiz, p, stage_num);
+    
+    // Show completion message if passed
+    if (passed) {
+        clear();
+        draw_box(2, 5, COLS - 4, 6);
+        
+        attron(COLOR_PAIR(2) | A_BOLD);
+        mvprintw(8, (COLS - 25) / 2, "STAGE %d COMPLETATO!", stage_num);
+        attroff(COLOR_PAIR(2) | A_BOLD);
+        
+        attron(COLOR_PAIR(3));
+        mvprintw(LINES - 2, (COLS - 30) / 2, "Premi un tasto per continuare...");
+        attroff(COLOR_PAIR(3));
+        
+        refresh();
+        getch();
+    }
+}
+
 static void run_stage_placeholder(Progress *p, int stage_num) {
     clear();
     
     draw_box(2, 5, COLS - 4, 8);
     
     attron(COLOR_PAIR(2) | A_BOLD);
-    mvprintw(7, (COLS - 30) / 2, "STAGE %d", stage_num);
+    mvprintw(7, (COLS - 30) / 2, "STAGE %d - PLACEHOLDER", stage_num);
     attroff(COLOR_PAIR(2) | A_BOLD);
     
-    mvprintw(9, (COLS - 40) / 2, "Questo e' uno stage placeholder.");
-    mvprintw(10, (COLS - 40) / 2, "Premi ENTER per completare lo stage.");
+    mvprintw(9, (COLS - 40) / 2, "Questo stage non e' ancora implementato.");
+    mvprintw(10, (COLS - 40) / 2, "Premi ENTER per completarlo (test).");
     
     attron(COLOR_PAIR(3));
     mvprintw(LINES - 2, (COLS - 30) / 2, "ENTER: Completa  ESC: Annulla");
