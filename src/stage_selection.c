@@ -14,6 +14,16 @@
 #define MAX_DISPLAY_STAGES 4
 #define TOTAL_MENU_ITEMS (MAX_DISPLAY_STAGES + 2)  // Stages + Phrases + Review
 
+// Stage to file mapping
+// NULL = placeholder stage (not yet implemented)
+static const char* stage_files[MAX_DISPLAY_STAGES + 1] = {
+    NULL,                                 // Index 0 - not used
+    "data/exercises/greetings.txt",       // Stage 1: Greetings
+    NULL,                                 
+    NULL,                                
+    NULL                                  
+};
+
 typedef struct {
     int stage_number;        // 0 = not a stage (special mode)
     const char *title;
@@ -166,14 +176,20 @@ void show_stage_selection(Progress *p) {
                     }
                 } else {
                     // Normal stage
-                    if (is_stage_unlocked(p, menu_items[selected].stage_number)) {
+                    int stage_num = menu_items[selected].stage_number;
+                    
+                    if (is_stage_unlocked(p, stage_num)) {
                         play_success_beep();
                         
-                        // Stage 1 has real quiz, others are placeholders
-                        if (menu_items[selected].stage_number == 1) {
-                            run_stage_with_quiz(p, 1, "data/exercises/greetings.txt");
+                        // Check if stage has quiz file configured
+                        const char *quiz_file = stage_files[stage_num];
+                        
+                        if (quiz_file != NULL) {
+                            // Real quiz exercise
+                            run_stage_with_quiz(p, stage_num, quiz_file);
                         } else {
-                            run_stage_placeholder(p, menu_items[selected].stage_number);
+                            // Placeholder (not yet implemented)
+                            run_stage_placeholder(p, stage_num);
                         }
                         
                         save_progress(p);  // Save after stage
