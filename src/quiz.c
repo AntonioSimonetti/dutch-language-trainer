@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <time.h>
 #include <pdcurses.h>
 #include "../include/quiz.h"
 #include "../include/ui.h"
@@ -15,6 +17,19 @@
 static void normalize_string(char *str);
 static int compare_answers(const char *user_input, const char *correct_answer);
 static void show_quiz_summary(Quiz *quiz);
+static void shuffle_quiz(Quiz *quiz);
+
+static void shuffle_quiz(Quiz *quiz) {
+    // Fisher-Yates shuffle algorithm
+    for (int i = quiz->count - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        
+        // Swap items[i] and items[j]
+        QuizItem temp = quiz->items[i];
+        quiz->items[i] = quiz->items[j];
+        quiz->items[j] = temp;
+    }
+}
 
 int load_quiz(Quiz *quiz, const char *filename) {
     FILE *f = fopen(filename, "r");
@@ -59,7 +74,21 @@ int load_quiz(Quiz *quiz, const char *filename) {
     }
     
     fclose(f);
-    return (quiz->count > 0) ? 1 : 0;
+    
+    if (quiz->count > 0) {
+        // Seed random generator (only once)
+        static int seeded = 0;
+        if (!seeded) {
+            srand(time(NULL));
+            seeded = 1;
+        }
+        
+        // Shuffle questions for random order
+        shuffle_quiz(quiz);
+        return 1;
+    }
+    
+    return 0;
 }
 
 int run_quiz(Quiz *quiz, Progress *p, int stage_num) {

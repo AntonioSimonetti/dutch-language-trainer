@@ -19,7 +19,7 @@
 static const char* stage_files[MAX_DISPLAY_STAGES + 1] = {
     NULL,                                 // Index 0 - not used
     "data/exercises/greetings.txt",       // Stage 1: Greetings
-    NULL,                                 
+    "data/exercises/numbers.txt",                                 
     NULL,                                
     NULL                                  
 };
@@ -33,7 +33,7 @@ typedef struct {
 
 static MenuItem menu_items[TOTAL_MENU_ITEMS] = {
     {1, "Stage 1: Introduzioni", 0, 0},
-    {2, "Stage 2: Provenienza", 0, 0},
+    {2, "Stage 2: Numeri", 0, 0},
     {3, "Stage 3: Domande Base", 0, 0},
     {4, "Stage 4: Question Words", 0, 0},
     {0, "Modalita Frasi", 1, 0},
